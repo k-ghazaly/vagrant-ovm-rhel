@@ -1,7 +1,7 @@
 
 #!/bin/bash
 
-output="$( curl 10.0.0.5:9090 )"
+output="$( curl localhost:7777 )"
 
 #echo $output
 

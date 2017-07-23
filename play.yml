@@ -4,42 +4,50 @@
   become: true
   tasks:
 
+### Task #1: As a RHEL Box the vagrant box must be subscribed to the RHN to enable extras repo to download Docker RPM
+
       - redhat_subscription:
          state: present
          username: kareem.ghazaly
          password: somepassword
          autosubscribe: true 
 
+### Task #2: Install python tools on the Vagrant Box
+
       -   name: Install python setup tools
           yum: name=python-setuptools
           tags: docker
 
+### Task #3: Install Pypi on the Vagrant Box
       -   name: Install Pypi
           easy_install: name=pip
           tags: docker
 
+### Task #4: Install Docker-py on the Vagrant Box
       -   name: Install docker-py
           pip: name=docker-py
           tags: docker
 
+### Task #4: Install Docker on the Vagrant Box
       -   name: Install Docker
           yum: 
             name: docker 
             enablerepo: rhel-7-server-extras-rpms
             state: present
 
+### Task#5: Check the Docker service to make sure it is up and running
       -   name: Make sure Docker is running
           service: name=docker state=started
           tags: docker
 
-
+### Task#6: Build a docker container based on the official Alpine Linux Image
       -   name: Build docker container Alpine Linux
           docker:
             name: Alpine
             image: library/alpine:latest
             volumes: 
             - /alpine
-
+### Task#7: Build a docker container with NginX installed and use static HTML script to serve out static Hello World page
 
       -   name: Build Nginx container with Hello World HTML page
           docker:
