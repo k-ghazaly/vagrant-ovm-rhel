@@ -1,0 +1,55 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+      - redhat_subscription:
+         state: present
+         username: kareem.ghazaly
+         password: somepassword
+         autosubscribe: true 
+
+      -   name: Install python setup tools
+          yum: name=python-setuptools
+          tags: docker
+
+      -   name: Install Pypi
+          easy_install: name=pip
+          tags: docker
+
+      -   name: Install docker-py
+          pip: name=docker-py
+          tags: docker
+
+      -   name: Install Docker
+          yum: 
+            name: docker 
+            enablerepo: rhel-7-server-extras-rpms
+            state: present
+
+      -   name: Make sure Docker is running
+          service: name=docker state=started
+          tags: docker
+
+
+      -   name: Build docker container Alpine Linux
+          docker:
+            name: Alpine
+            image: library/alpine:latest
+            volumes: 
+            - /alpine
+
+
+      -   name: Build Nginx container with Hello World HTML page
+          docker:
+            name: nginx01
+            image: library/nginx:latest
+            detach: True
+            volumes:
+            - /home/vagrant/docker-nginx:/usr/share/nginx/html:ro
+            ports:
+            - 9090:80
+            expose:
+            - 9090
+
